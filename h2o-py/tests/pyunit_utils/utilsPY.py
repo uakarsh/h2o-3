@@ -4364,3 +4364,7 @@ def assertCoefEqual(regCoeff, coeff, coeffClassSet, tol=1e-6):
         diff = abs(val1-val2)
         print("val1: {0}, val2: {1}, tol: {2}".format(val1, val2, tol))
         assert diff < tol, "diff {0} exceeds tolerance {1}.".format(diff, tol)
+
+
+def assert_equals(expected, actual, message=""):
+    assert expected == actual, ("{0}\nexpected:{1}\nactual\t:{2}".format(message, expected, actual))
