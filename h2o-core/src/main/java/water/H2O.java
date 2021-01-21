@@ -28,6 +28,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.lang.reflect.Field;
 import java.net.*;
+import java.security.SignedObject;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -2149,6 +2150,17 @@ final public class H2O {
     }
     return false;
   } 
+  
+  private static final Set<String> IGNORED_PROPERTIES;
+  
+  static {
+    final Set<String> ignored_properties = new HashSet<>();
+    ignored_properties.add("ai.h2o.org.eclipse.jetty.LEVEL");
+    ignored_properties.add("ai.h2o.org.eclipse.jetty.util.log.class");
+    ignored_properties.add("ai.h2o.org.eclipse.jetty.util.log.StdErrLog");
+    
+    IGNORED_PROPERTIES = Collections.unmodifiableSet(ignored_properties);
+  }
 
   // --------------------------------------------------------------------------
   public static void main( String[] args ) {
@@ -2171,7 +2183,7 @@ final public class H2O {
     ArrayList<String> args2 = new ArrayList<>(Arrays.asList(args));
     for( Object p : System.getProperties().keySet() ) {
       String s = (String)p;
-      if( s.startsWith("ai.h2o.") ) {
+      if( s.startsWith("ai.h2o.") && !IGNORED_PROPERTIES.contains(s)) {
         args2.add("-" + s.substring(7));
         // hack: Junits expect properties, throw out dummy prop for ga_opt_out
         if (!s.substring(7).equals("ga_opt_out") && !System.getProperty(s).isEmpty())
