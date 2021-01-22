@@ -33,6 +33,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.regex.Pattern;
 
 /**
 * Start point for creating or joining an <code>H2O</code> Cloud.
@@ -2149,19 +2150,15 @@ final public class H2O {
       return true;
     }
     return false;
-  } 
-  
-  private static final Set<String> IGNORED_PROPERTIES;
-  
-  static {
-    final Set<String> ignored_properties = new HashSet<>();
-    ignored_properties.add("ai.h2o.org.eclipse.jetty.LEVEL");
-    ignored_properties.add("ai.h2o.org.eclipse.jetty.util.log.class");
-    ignored_properties.add("ai.h2o.org.eclipse.jetty.util.log.StdErrLog");
-    
-    IGNORED_PROPERTIES = Collections.unmodifiableSet(ignored_properties);
   }
 
+  /**
+   * Any system property starting with `ai.h2o.` and containing any more `.` does not match
+   * this pattern and is therefore ignored. This is mostly to prevent system properties
+   * serving as configuration for H2O's dependencies (e.g. `ai.ai.h2o.org.eclipse.jetty.LEVEL` ).
+   */
+  private static final Pattern IGNORED_PROPERTIES = Pattern.compile("ai\\.h2o\\.[^\\.]*");
+  
   // --------------------------------------------------------------------------
   public static void main( String[] args ) {
    H2O.configureLogging();
@@ -2183,7 +2180,7 @@ final public class H2O {
     ArrayList<String> args2 = new ArrayList<>(Arrays.asList(args));
     for( Object p : System.getProperties().keySet() ) {
       String s = (String)p;
-      if( s.startsWith("ai.h2o.") && !IGNORED_PROPERTIES.contains(s)) {
+      if( s.startsWith("ai.h2o.") && IGNORED_PROPERTIES.matcher(s).matches()) {
         args2.add("-" + s.substring(7));
         // hack: Junits expect properties, throw out dummy prop for ga_opt_out
         if (!s.substring(7).equals("ga_opt_out") && !System.getProperty(s).isEmpty())

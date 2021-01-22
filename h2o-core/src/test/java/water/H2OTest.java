@@ -2,7 +2,9 @@ package water;
 
 import org.junit.Test;
 
+import java.lang.reflect.Field;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
 
@@ -32,6 +34,27 @@ public class H2OTest {
   private void checkObjectId(String id, int seq) {
     assertTrue(id.startsWith("test-desc_test-type"));
     assertTrue(id.endsWith("_" + seq));
+  }
+
+  @Test
+  public void testPropertiesMatching() throws Exception {
+    final Field ignored_properties = H2O.class.getDeclaredField("IGNORED_PROPERTIES");
+    try {
+      ignored_properties.setAccessible(true);
+      final Pattern ignored_properties_pattern = (Pattern) ignored_properties.get(null);
+      assertNotNull(ignored_properties_pattern);
+      
+      // Any string with a dot after `ai.h2o.` must fail
+      assertFalse(ignored_properties_pattern.matcher("ai.ai.h2o.anythingwithdotwillfail.").matches());
+      assertFalse(ignored_properties_pattern.matcher("ai.ai.h2o.org.eclipse.jetty.LEVEL").matches());
+      assertFalse(ignored_properties_pattern.matcher("ai.h2o.org.eclipse.jetty.util.log.class").matches());
+      assertFalse(ignored_properties_pattern.matcher("ai.h2o.org.eclipse.jetty.util.log.StdErrLog").matches());
+      
+      assertTrue(ignored_properties_pattern.matcher("ai.h2o.hdfs_config").matches());
+    } finally {
+      ignored_properties.setAccessible(false);
+    }
+
   }
   
 }
