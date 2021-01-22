@@ -460,14 +460,18 @@ def call(final pipelineContext) {
       image: pipelineContext.getBuildConfig().getSmokeHadoopImage(distribution.name, distribution.version, false)
     ]
     def standaloneStage = evaluate(stageTemplate.inspect())
-    standaloneStage.stageName = "${distribution.name.toUpperCase()} ${distribution.version} - STANDALONE"
+    standaloneStage.stageName = "${distribution.name.toUpperCase()} ${distribution.version} - STANDALONE (h2o.jar)"
     standaloneStage.customData.mode = 'STANDALONE'
+
+    def standaloneDriverStage = evaluate(stageTemplate.inspect())
+    standaloneStage.stageName = "${distribution.name.toUpperCase()} ${distribution.version} - STANDALONE (h2odriver.jar)"
+    standaloneStage.customData.mode = 'STANDALONE_DRIVER'
 
     def onHadoopStage = evaluate(stageTemplate.inspect())
     onHadoopStage.stageName = "${distribution.name.toUpperCase()} ${distribution.version} - HADOOP"
     onHadoopStage.customData.mode = 'ON_HADOOP'
 
-    HADOOP_STAGES += [ standaloneStage, onHadoopStage ]
+    HADOOP_STAGES += [ standaloneStage, standaloneDriverStage, onHadoopStage ]
   }
 
   def KERBEROS_STAGES = []
