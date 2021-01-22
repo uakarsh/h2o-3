@@ -22,7 +22,9 @@ def call(final stageConfig, final boolean getMakeTarget = false) {
         case H2O_HADOOP_STARTUP_MODE_STEAM_SPARKLING:
             return getCommandHadoop(stageConfig, false, true, false, true)
         case H2O_HADOOP_STARTUP_MODE_STANDALONE:
-            return getCommandStandalone(stageConfig)
+            return getCommandStandalone(stageConfig, "build/h2o.jar")
+        case H2O_HADOOP_STARTUP_MODE_STANDALONE_DRIVER:
+            return getCommandStandalone(stageConfig, "h2o-hadoop-*/h2o-${stageConfig.customData.distribution}${stageConfig.customData.version}-assembly/build/libs/h2odriver.jar")
         default:
             error("Startup mode ${stageConfig.customData.mode} for H2O with Hadoop is not supported")
     }
@@ -105,10 +107,10 @@ private GString getCommandHadoop(
         """
 }
 
-private GString getCommandStandalone(final stageConfig) {
+private GString getCommandStandalone(final stageConfig, final h2oJar) {
     def defaultPort = 54321
     return """
-            java -cp build/h2o.jar:\$(cat /opt/hive-jdbc-cp) water.H2OApp \\
+            java -cp ${h2oJar}:\$(cat /opt/hive-jdbc-cp) water.H2OApp \\
                 -port ${defaultPort} -ip \$(hostname --ip-address) -name \$(date +%s) \\
                 -jks mykeystore.jks \\
                 -spnego_login -user_name ${stageConfig.customData.kerberosUserName} \\
