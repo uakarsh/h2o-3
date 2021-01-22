@@ -2157,7 +2157,7 @@ final public class H2O {
    * this pattern and is therefore ignored. This is mostly to prevent system properties
    * serving as configuration for H2O's dependencies (e.g. `ai.ai.h2o.org.eclipse.jetty.LEVEL` ).
    */
-  private static final Pattern IGNORED_PROPERTIES = Pattern.compile("ai\\.h2o\\.[^\\.]*");
+  static final Pattern IGNORED_PROPERTIES = Pattern.compile("ai\\.h2o\\.[^\\.]*");
   
   // --------------------------------------------------------------------------
   public static void main( String[] args ) {

@@ -38,23 +38,13 @@ public class H2OTest {
 
   @Test
   public void testPropertiesMatching() throws Exception {
-    final Field ignored_properties = H2O.class.getDeclaredField("IGNORED_PROPERTIES");
-    try {
-      ignored_properties.setAccessible(true);
-      final Pattern ignored_properties_pattern = (Pattern) ignored_properties.get(null);
-      assertNotNull(ignored_properties_pattern);
-      
       // Any string with a dot after `ai.h2o.` must fail
-      assertFalse(ignored_properties_pattern.matcher("ai.ai.h2o.anythingwithdotwillfail.").matches());
-      assertFalse(ignored_properties_pattern.matcher("ai.ai.h2o.org.eclipse.jetty.LEVEL").matches());
-      assertFalse(ignored_properties_pattern.matcher("ai.h2o.org.eclipse.jetty.util.log.class").matches());
-      assertFalse(ignored_properties_pattern.matcher("ai.h2o.org.eclipse.jetty.util.log.StdErrLog").matches());
+      assertFalse(H2O.IGNORED_PROPERTIES.matcher("ai.ai.h2o.anythingwithdotwillfail.").matches());
+      assertFalse(H2O.IGNORED_PROPERTIES.matcher("ai.ai.h2o.org.eclipse.jetty.LEVEL").matches());
+      assertFalse(H2O.IGNORED_PROPERTIES.matcher("ai.h2o.org.eclipse.jetty.util.log.class").matches());
+      assertFalse(H2O.IGNORED_PROPERTIES.matcher("ai.h2o.org.eclipse.jetty.util.log.StdErrLog").matches());
       
-      assertTrue(ignored_properties_pattern.matcher("ai.h2o.hdfs_config").matches());
-    } finally {
-      ignored_properties.setAccessible(false);
-    }
-
+      assertTrue(H2O.IGNORED_PROPERTIES.matcher("ai.h2o.hdfs_config").matches());
   }
   
 }
