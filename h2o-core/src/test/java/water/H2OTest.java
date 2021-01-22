@@ -39,7 +39,9 @@ public class H2OTest {
   @Test
   public void testPropertiesMatching() throws Exception {
       // Any string with a dot after `ai.h2o.` must fail
-      assertFalse(H2O.IGNORED_PROPERTIES.matcher("ai.ai.h2o.anythingwithdotwillfail.").matches());
+      assertFalse(H2O.IGNORED_PROPERTIES.matcher("noprefixnodots").matches());
+      assertFalse(H2O.IGNORED_PROPERTIES.matcher("no.prefix.ever").matches());
+      assertFalse(H2O.IGNORED_PROPERTIES.matcher("ai.h2o.anythingwithdotwillfail.").matches());
       assertFalse(H2O.IGNORED_PROPERTIES.matcher("ai.ai.h2o.org.eclipse.jetty.LEVEL").matches());
       assertFalse(H2O.IGNORED_PROPERTIES.matcher("ai.h2o.org.eclipse.jetty.util.log.class").matches());
       assertFalse(H2O.IGNORED_PROPERTIES.matcher("ai.h2o.org.eclipse.jetty.util.log.StdErrLog").matches());
