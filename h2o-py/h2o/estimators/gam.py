@@ -1049,3 +1049,21 @@ class H2OGeneralizedAdditiveEstimator(H2OEstimator):
         :return: Gam columns if specified.
         """
         return parms["gam_columns"]
+
+    def summary(self):
+        """Print a detailed summary of the model."""
+        model = self._model_json["output"]
+        if "glm_model_summary" in model and model["glm_model_summary"] is not None:
+            return model["glm_model_summary"]
+        print("No model summary for this model")
+
+    def scoring_history(self):
+        """
+        Retrieve Model Score History.
+
+        :returns: The score history as an H2OTwoDimTable or a Pandas DataFrame.
+        """
+        model = self._model_json["output"]
+        if "glm_scoring_history" in model and model["glm_scoring_history"] is not None:
+            return model["glm_scoring_history"].as_data_frame()
+        print("No score history for this model")
