@@ -12,13 +12,6 @@ import matplotlib.figure
 from h2o.utils.ext_dependencies import get_matplotlib_pyplot
 from h2o.exceptions import H2OValueError
 
-try:
-    import matplotlib.pyplot as plt
-except ImportError:
-    # Possibly failed due to missing tkinter in old matplotlib in python 2.7
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
-
 
 def _display(object):
     """
@@ -1763,6 +1756,8 @@ def learning_curve_plot(
     if model.algo not in ("stackedensemble", "glm", "gam", "glrm", "deeplearning",
                           "drf", "gbm", "xgboost", "coxph", "isolationforest"):
         raise H2OValueError("Algorithm {} doesn't support learning curve plot!".format(model.algo))
+
+    plt = get_matplotlib_pyplot(False, raise_if_not_available=True)
 
     metric_mapping = {'anomaly_score': 'mean_anomaly_score',
                       'custom': 'custom',
