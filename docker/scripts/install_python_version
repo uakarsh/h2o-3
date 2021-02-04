@@ -43,7 +43,7 @@ for python_version in "${array[@]}"; do
   rm -rf /var/cache/apt/*
 
   echo "###### Installing pip for Python ${python_version} ######"
-  python${python_version} -m easy_install pip
+  python${python_version} -m easy_install pip<21
   #python${python_version} -m pip -U install pip
 
   echo "###### Creating Virtualenv for Python ${python_version} ######"
