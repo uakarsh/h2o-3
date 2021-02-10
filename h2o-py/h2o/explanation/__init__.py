@@ -1,14 +1,16 @@
 # -*- encoding: utf-8 -*-
 
 from ._explain import varimp_heatmap, model_correlation_heatmap, shap_explain_row_plot, shap_summary_plot,\
-    explain, explain_row, pd_plot, pd_multi_plot, ice_plot, residual_analysis_plot
+    explain, explain_row, pd_plot, pd_multi_plot, ice_plot, residual_analysis_plot, varimp_matrix, model_correlation_matrix
 
 __all__ = [
     "explain",
     "explain_row",
     "varimp_heatmap",
     "model_correlation_heatmap",
-    "pd_multi_plot"
+    "pd_multi_plot",
+    "varimp_matrix",
+    "model_correlation_matrix",
 ]
 
 
@@ -29,4 +31,5 @@ def register_explain_methods():
     h2o.automl._base.H2OAutoMLBaseMixin.model_correlation_heatmap = model_correlation_heatmap
     h2o.automl._base.H2OAutoMLBaseMixin.explain = explain
     h2o.automl._base.H2OAutoMLBaseMixin.explain_row = explain_row
-
+    h2o.automl._base.H2OAutoMLBaseMixin.model_correlation = model_correlation_matrix
+    h2o.automl._base.H2OAutoMLBaseMixin.varimp = varimp_matrix
