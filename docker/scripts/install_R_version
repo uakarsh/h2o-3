@@ -68,11 +68,15 @@ function checkRInstallLog() {
 
 # Install dependencies
 echo "Installing dependencies for R ${R_VERSION}"
+/usr/local/R/current/bin/R -e "chooseCRANmirror(graphics=FALSE, ind=1); library(devtools); \
+  install_version('rgl', version = '0.100.54'); \
+" 2>&1 | tee R.install.0.log
+checkRInstallLog R.install.0.log
 /usr/local/R/current/bin/R -e "chooseCRANmirror(graphics=FALSE, ind=1); \
   install.packages(c( \
     'dplyr', 'R.utils', 'AUC', 'mlbench', 'flexclust', 'randomForest', \
     'bit64', 'HDtweedie', 'jsonlite', 'statmod', 'devtools', 'roxygen2', 'testthat', 'Rcpp', 'fpc', 'RUnit', \
-    'ade4', 'e1071', 'ggplot2', 'LiblineaR', 'optparse', 'uuid', 'usethis', 'rgl', 'plot3Drgl',  \
+    'ade4', 'e1071', 'ggplot2', 'LiblineaR', 'optparse', 'uuid', 'usethis', 'plot3Drgl',  \
     'IRdisplay', 'plotly' \
   )) \
 " 2>&1 | tee R.install.1.log
