@@ -228,21 +228,19 @@ public class GAM extends ModelBuilder<GAMModel, GAMModel.GAMParameters, GAMModel
     }
     if (error_count() > 0)
       throw H2OModelBuilderIllegalArgumentException.makeFromBuilder(GAM.this);
-    if (_parms._gam_columns == null)  // check _gam_columns contains valid columns
+    if (_parms._gam_columns == null) { // check _gam_columns contains valid columns
       error("_gam_columns", "must specify columns names to apply GAM to.  If you don't have any," +
               " use GLM.");
-    else { // check and make sure gam_columns column types are legal
+    } else { // check and make sure gam_columns column types are legal
       if (_parms._bs == null)
         setDefaultBSType(_parms);
+      if ((_parms._bs != null) && (_parms._gam_columns.length != _parms._bs.length))  // check length
+        error("gam colum number", "Number of gam columns implied from _bs and _gam_columns do not " +
+                "match.");
       assertLegalGamColumnsNBSTypes();  // number of CS and TP smoothers determined.
     }
-    
     if (_parms._scale == null)
       setDefaultScale(_parms);
-    
-    if ((_parms._bs != null) && (_parms._gam_columns.length != _parms._bs.length))  // check length
-      error("gam colum number", "Number of gam columns implied from _bs and _gam_columns do not " +
-              "match.");
     setGamPredSize(_parms, _cubicSplineNum);
     if (_thinPlateSmoothersWithKnotsNum > 0)
       setThinPlateParameters(_parms, _thinPlateSmoothersWithKnotsNum); // set the m, M for thin plate regression smoothers
